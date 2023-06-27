@@ -1,0 +1,7 @@
+{
+  "email": "box@geba.fr",
+  "publickey": {
+    "pem": "-----BEGIN PUBLIC KEY-----\r\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAoz2g+q216ztt8JxUsgx0\r\nz5zt1TdB4ElXYcXPWSaL3KSxp3FIpayAsLX5ETdk7sFtHUVz2hR4FIaKGoWBHxfn\r\nT46hihSpuHZtF6DOi+mEIW43GTSr5I5SQPQvjUNdyds7nZmXMgn53rpHslenQinp\r\nI4SpxzAMtXIcRzOZzanIRwVCGVh5k8XMyyMKxh1RRnQBgUAu0k12up2W5Hh+WFeo\r\nl2ezdNcVAzX0EZrOylNqIHia28cJBXdzbzX7YCLmrRjP1WHiGdr4DRxLsWmNORtR\r\nPsZYAGwnqZQd7oHx6Zl8/XKT/WWAWiSKXIf6pFAky+cHrug+NbWJCPJnEs9glYpN\r\nwvocleJwZbx06q0LXiqorUgiPtVfOFmXYJ+iqkvoNvasymySJpCktVqMVznTSQ7a\r\n5pkHHuz29jioqpT/O3y9Ebk/QhsdV/QYNYIeYZQI+ud+RHrsl77C2EGwAtpN9Qzu\r\nRi6gsvtKl4E1FL5XWYA2v6X9eEn1KAu+rnpsJWKy9l0s3GZHCt9Ep9eNDY3U1wk7\r\nVYVO1UIbUIaoTfMvRuLEF98km7XVudD75FZQkeK9exFqEW8gpJw6YEz7cHIglhmg\r\n1KVjsAURTTi1Pq9E9YiczSazhXj7Ywq6xACtpT+957hxM+833qSb6mRXMpSZqgnr\r\nBh8UjHXHPdxQGOq5gRvbnfECAwEAAQ==\r\n-----END PUBLIC KEY-----\r\n"
+  },
+  "user_imported": false
+}
