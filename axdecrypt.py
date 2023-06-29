@@ -142,11 +142,7 @@ if (os.path.isfile(data_filepath)):
 
     f_block = f_in.read()
     data_file = axdatafile.DataFile(f_block)
-    hex_data = ba.hexlify(data_file.GUID).decode()
-    print(hex_data)
-    print("Block length", data_file.block_length)
-    print("Header block type", data_file.header_block_type)
-    hex_data = ba.hexlify(data_file.next_block).decode()
+    hex_data = ba.hexlify(f_block).decode()
     print(hex_data)
     print('-------------------------')
 

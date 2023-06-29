@@ -32,23 +32,32 @@ class DataFile:
         self.block = file_block
 
         # Header parsing
-        self.GUID                  = file_block[0:16]
-        self.block_length          = int.from_bytes(file_block[16:20], 'little')
-        self.header_block_type     = file_block[20]
-        self.header_filler_1       = file_block[21:37]
-        self.next_block            = file_block[37:]
+        self.GUID  = file_block[0:16]
+        next_block = file_block[16:]
 
-        # Checksum
-        """
-        header_copy = file_header[0:12] + b'\x00\x00\x00\x00' + file_header[16:144]
-        h = ba.crc32(header_copy)
-        h_ctrl = ba.hexlify(h.to_bytes(4, 'big'))
+        # Other blocks
+        while next_block:
 
-        # h_ctrl and self.crc32_checksum should be the same
-        if (h_ctrl != self.crc32_checksum):
-            print("Checksum error")
-            sys.exit(0)
-        """
+            current_block = next_block
+            block_length  = int.from_bytes(current_block[0:4], 'little')
+            block_type    = current_block[4]
+            print("Header type:", block_type)
+
+            match block_type:
+                case 2:
+                    # Header Block 2 ‐ Preamble (mandatory)
+                    self.header_filler_1        = current_block[4:block_length]
+                    next_block = current_block[block_length:]
+                case 3:
+                    self.file_major_version     = current_block[5]
+                    self.file_minor_version     = current_block[6]
+                    self.pgm_major_version      = current_block[7]
+                    self.pgm_minor_version      = current_block[8]
+                    self.pgm_minor_version2     = current_block[9]
+                    next_block = current_block[10:]
+                case _:
+                    break
+           
 
 
 
