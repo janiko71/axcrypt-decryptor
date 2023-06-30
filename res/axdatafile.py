@@ -86,6 +86,9 @@ class DataFile:
                     # 102 ‐ UTF‐8 Encoded list of recipient e‐mails (encrypted)
                     self.recep_mail             = current_block[5:block_length]
                     next_block = current_block[block_length:]
+                case 103:
+                    # 103 ‐ Algorithm Verifier
+                    next_block = current_block[block_length:]
                 case _:
                     break
            

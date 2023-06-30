@@ -166,6 +166,10 @@ if (os.path.isfile(key_filepath)):
     print("Reading \'" + key_filepath + "\' file...")
     with open(key_filepath, 'r') as f_key:
         keydata = json.load(f_key)
+        for k,v in keydata['keypair']['privatekey'].items():
+            # should be the only one
+            key_type = k.lower()
+            key_value = v
 
     file_stats = os.stat(key_filepath)
     
@@ -188,6 +192,21 @@ else:
     # no => input()
     pwd = str(getpass.getpass(prompt="AxCrypt Passphrase: ") or DEFAULT_PWD)
 
+
+    
+"""
+    Key serialization, can be PEM or DER
+"""
+match key_type:
+    case 'pem':
+        print('Found PEM key')
+        key_cert = serialization.load_pem_private_key(bytes(key_value.replace("\r\n",""), 'utf8'), bytes(pwd, 'utf8'))
+    case 'der':
+        print('Found DER key')
+        key_cert = serialization.load_der_x509_certificate(key_value)
+    case _:
+        print('Found unknown-type key')
+        exit()
 
 """
     Printing files info
