@@ -56,6 +56,9 @@ class DataFile:
                     self.pgm_minor_version      = current_block[8]
                     self.pgm_minor_version2     = current_block[9]
                     next_block = current_block[10:]
+                case 11:
+                    # 11 - HMAC‐SHA512 End of File
+                    next_block = current_block[block_length:]
                 case 13:
                     # 13 - Header/Trailer. Symmetric Key Wrap
                     self.wrap                   = current_block[5:149]
@@ -67,6 +70,12 @@ class DataFile:
                 case 14:
                     # 14 - RSA Key Encryption
                     self.rsa_key                = current_block[5:block_length]
+                    next_block = current_block[block_length:]
+                case 20:
+                    # 20 - Data
+                    next_block = current_block[block_length:]
+                case 63:
+                    # 63 - End of headers
                     next_block = current_block[block_length:]
                 case 68:
                     #  68 ‐ File Information (encrypted)
@@ -82,6 +91,9 @@ class DataFile:
                     #  70 ‐ UTF‐8 Encoded File Name (encrypted)
                     self.encoded_file_name      = current_block[5:block_length]
                     next_block = current_block[block_length:]
+                case 101:
+                    # 101 ‐ Plain text lengths
+                    next_block = current_block[block_length:]
                 case 102:
                     # 102 ‐ UTF‐8 Encoded list of recipient e‐mails (encrypted)
                     self.recep_mail             = current_block[5:block_length]
@@ -90,8 +102,7 @@ class DataFile:
                     # 103 ‐ Algorithm Verifier
                     next_block = current_block[block_length:]
                 case _:
-                    break
-           
+                    print("Unkown block type")
 
 
 
