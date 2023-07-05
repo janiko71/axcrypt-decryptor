@@ -111,11 +111,8 @@ def print_parameter(txt, param):
 def print_data_file_info(data_file):
 
     print('-'*72)
-    print_parameter("File type version", data_file.file_type_version)
-    print_parameter("File CRC32 (verified)", str(data_file.crc32_checksum.decode()))
-    print_parameter("Global salt", str(data_file.global_salt.hex()))
-    print_parameter("File salt", str(data_file.file_salt.hex()))
-    print_parameter("Auth tag", str(data_file.aes_gcm_auth_tag.hex()))
+    print_parameter("Original length", data_file.original_length)
+    print_parameter("Compressed length", data_file.compressed_length)
     print('-'*72)
 
     return

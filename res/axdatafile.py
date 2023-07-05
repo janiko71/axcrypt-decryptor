@@ -41,7 +41,7 @@ class DataFile:
             current_block = next_block
             block_length  = int.from_bytes(current_block[0:4], 'little')
             block_type    = current_block[4]
-            print("Header type read:", block_type)
+            print("Header type read:", block_type, "length:", block_length)
 
             match block_type:
                 case 2:
@@ -58,9 +58,11 @@ class DataFile:
                     next_block = current_block[10:]
                 case 11:
                     # 11 - HMAC‐SHA512 End of File
+                    self.checksum               = current_block[5:block_length]
                     next_block = current_block[block_length:]
                 case 13:
                     # 13 - Header/Trailer. Symmetric Key Wrap
+                    #      Ref: https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-38F.pdf
                     self.wrap                   = current_block[5:149]
                     self.wrap_salt              = current_block[149:213]
                     self.wrap_iterations        = int.from_bytes(current_block[213:216], 'little')
@@ -69,13 +71,15 @@ class DataFile:
                     next_block = current_block[block_length:]
                 case 14:
                     # 14 - RSA Key Encryption
+                    #      Encrypted with the public key of the Ax acccount
                     self.rsa_key                = current_block[5:block_length]
                     next_block = current_block[block_length:]
                 case 20:
                     # 20 - Data
+                    self.data                   = current_block[5:block_length]
                     next_block = current_block[block_length:]
                 case 63:
-                    # 63 - End of headers
+                    # 63 - End of headers, nothing interesting here
                     next_block = current_block[block_length:]
                 case 68:
                     #  68 ‐ File Information (encrypted)
@@ -93,6 +97,8 @@ class DataFile:
                     next_block = current_block[block_length:]
                 case 101:
                     # 101 ‐ Plain text lengths
+                    self.original_length        = int.from_bytes(current_block[5:13], 'little')
+                    self.compressed_length      = int.from_bytes(current_block[13:block_length], 'little')
                     next_block = current_block[block_length:]
                 case 102:
                     # 102 ‐ UTF‐8 Encoded list of recipient e‐mails (encrypted)
@@ -100,9 +106,11 @@ class DataFile:
                     next_block = current_block[block_length:]
                 case 103:
                     # 103 ‐ Algorithm Verifier
+                    self.random                 = current_block[5:21]
+                    self.random_xor             = current_block[21:block_length]
                     next_block = current_block[block_length:]
                 case _:
-                    print("Unkown block type")
+                    print("Unkown block type", block_type)
 
 
 

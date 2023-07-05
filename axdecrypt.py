@@ -35,12 +35,14 @@ from colorama import Fore, Back, Style
 
 from cryptography.hazmat.backends import default_backend
 
-from cryptography.hazmat.primitives import padding
+#from cryptography.hazmat.primitives import padding
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import hmac
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import keywrap
 from cryptography.hazmat.primitives import asymmetric
+
+from cryptography.hazmat.primitives.asymmetric import padding
 
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -143,7 +145,7 @@ if (os.path.isfile(data_filepath)):
     f_block = f_in.read()
     data_file = axdatafile.DataFile(f_block)
     hex_data = ba.hexlify(f_block).decode()
-    print(hex_data)
+    #print(hex_data)
     print('-------------------------')
 
     file_stats = os.stat(data_filepath)
@@ -169,7 +171,7 @@ if (os.path.isfile(key_filepath)):
         for k,v in keydata['keypair']['privatekey'].items():
             # should be the only one
             key_type = k.lower()
-            key_value = v
+            key_value = v.replace("\r\n", os.linesep)
 
     file_stats = os.stat(key_filepath)
     
@@ -195,18 +197,22 @@ else:
 
     
 """
-    Key serialization, can be PEM or DER
+    Account key serialization, can be PEM or DER
 """
 match key_type:
     case 'pem':
         print('Found PEM key')
-        key_cert = serialization.load_pem_private_key(bytes(key_value.replace("\r\n",""), 'utf8'), bytes(pwd, 'utf8'))
+        ax_private_key = serialization.load_pem_private_key(bytes(key_value.replace("\r\n", os.linesep), 'utf8'), password=None)
+        # key_cert = serialization.load_pem_private_key(bytes(key_value.replace("\r\n", os.linesep), 'utf8'), bytes(pwd, 'utf8'))
+        print("Key length", ax_private_key.key_size)
+        print("Key type", type(ax_private_key).__name__)
     case 'der':
-        print('Found DER key')
-        key_cert = serialization.load_der_x509_certificate(key_value)
+        print('Found DER key but it\'s not expected...')
+        exit()
     case _:
         print('Found unknown-type key')
         exit()
+
 
 """
     Printing files info
