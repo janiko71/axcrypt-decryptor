@@ -41,7 +41,7 @@ class DataFile:
             current_block = next_block
             block_length  = int.from_bytes(current_block[0:4], 'little')
             block_type    = current_block[4]
-            print("Header type read:", block_type, "length:", block_length)
+            print("Header type read:", block_type, "data length:", block_length - 5)
 
             match block_type:
                 case 2:
