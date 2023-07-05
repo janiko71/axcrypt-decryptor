@@ -69,7 +69,7 @@ import res.fnhelper as helper
 DEFAULT_FILE = "test/files/test-txt.axx"
 KEY_FILE = "test/Keys-1729679754.txt"
 
-KDF_ITERATIONS = 50000
+KDF_ITERATIONS = 1000
 DEFAULT_PWD = "aesdformatguide"
 PWD_ENCODING = "UTF8"
 HEADER_LENGTH = 144
@@ -238,23 +238,21 @@ backend   = default_backend()
 
 
 #
-# Public key
-# ===============
-#
-# RSA-4096 key is in DER format
-# 738 base64 (6-bits) = 123 bytes
+# File master key, encrypted with Ax (account) public key
 #
 
-#public_key = serialization.load_der_public_key(
-#    keyfile.public_key_bytes,
-#    backend
-#)
-#helper.print_parameter("Public key importation", "OK")
+file_master_key = ax_private_key.decrypt(
+            data_file.rsa_key,
+            padding.OAEP(
+            mgf=padding.MGF1(algorithm=hashes.SHA512()),
+            algorithm=hashes.SHA512(),
+            label=None
+        )
+)
 
 
 #
-# Password key
-# =================
+# Key for key-wrapping
 #
 
 """
@@ -263,13 +261,13 @@ backend   = default_backend()
 kdf_v = PBKDF2HMAC(
     algorithm=hashes.SHA512(),
     length=32,
-    salt=data_file.global_salt,
+    salt=data_file.wrap_salt,
     iterations=KDF_ITERATIONS,
     backend=backend
 )
 
 pwd_derived_key_verif = kdf_v.derive(pwd.encode(PWD_ENCODING))
-pwd_derived_key = hashlib.pbkdf2_hmac("sha512", pwd.encode(PWD_ENCODING), data_file.global_salt, KDF_ITERATIONS, 32)
+pwd_derived_key = hashlib.pbkdf2_hmac("sha512", pwd.encode(PWD_ENCODING), data_file.wrap_salt, KDF_ITERATIONS, 32)
 
 # Reset variable
 pwd = None
